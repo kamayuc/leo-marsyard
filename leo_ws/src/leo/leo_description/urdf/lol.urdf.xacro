@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" 
+    name="leo_description">
+  <xacro:arg name="robot_namespace" default="/" />
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://leo_description/models/base.dae"/>
+      </geometry>
+    </visual>
+  </link>
+
+
+  <xacro:property name="M_PI" value="3.14159"/>
+
+  <xacro:include filename="$(find leo_description)/urdf/wheel.urdf.xacro" />
+
+  <xacro:leo_wheel name="FL" model="left"/>
+  <xacro:leo_wheel name="FR" model="right"/>
+  <xacro:leo_wheel name="RL" model="left"/>
+  <xacro:leo_wheel name="RR" model="right"/>
+  
+
+  <!-- <joint name="wheel_FL_joint" type="continuous">
+    <origin xyz="0.1472 0.1114 -0.1353" rpy="0 0 ${M_PI}"/>
+    <parent link="base_link"/>
+    <child link="wheel_FL_link"/>
+    <axis xyz="0 -1 0"/>
+  </joint>
+
+  <joint name="wheel_FR_joint" type="continuous">
+    <origin xyz="0.1472 -0.1114 -0.1353" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="wheel_FR_link"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <joint name="wheel_RL_joint" type="continuous">
+    <origin xyz="-0.1419 0.1114 -0.1353" rpy="0 0 ${M_PI}"/>
+    <parent link="base_link"/>
+    <child link="wheel_RL_link"/>
+    <axis xyz="0 -1 0"/>
+  </joint>
+
+  <joint name="wheel_RR_joint" type="continuous">
+    <origin xyz="-0.1419 -0.1114 -0.1353" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="wheel_RR_link"/>
+    <axis xyz="0 1 0"/>
+  </joint> -->
+
+  <link name="camera_frame"/>
+
+  <joint name="camera_joint" type="fixed">
+      <origin xyz="0.0971 0 -0.0427" rpy="${-pi/2 - 0.2094} 0 ${-M_PI/2}"/>
+      <parent link="base_link"/>
+      <child link="camera_frame"/>
+  </joint>
+
+  <!-- Added inertial link -->
+  <!-- Values have to be fixed (got from husky) -->
+  <link name="inertial_link">
+    <inertial>
+      <mass value="6.0" />
+      <origin xyz="-0.00065 -0.085 0.062" />
+      <inertia ixx="0.6022" ixy="-0.02364" ixz="-0.1197" iyy="1.7386" iyz="-0.001544" izz="2.0296" />
+    </inertial>
+  </link>
+
+  <joint name="inertial_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="inertial_link" />
+  </joint>
+
+  <!-- Added gazebo_ros control -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>$(arg robot_namespace)</robotNamespace>
+    </plugin>
+  </gazebo>
+
+</robot>
