@@ -7,6 +7,5 @@
         type="rviz"
         args="-d $(arg rviz_file)"
         required="true"
-        output="screen"
-        ns="leo"/>
+        output="screen"/>
 </launch>
