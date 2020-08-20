@@ -12,14 +12,26 @@ git clone https://github.com/PUT-UGV-Team/leo-marsyard.git
 ```
 3. Create a folder in .gazebo and copy model of terrain to gazebo models folder
 ```
-cp -r leo_ws/src/leo_gazebo/models/terrain/* $HOME/.gazebo/models/terrain/
+cd
+mkdir -p ~/.gazebo/models/terrain
+cd ~/leo_ws/src
+cp -r ~/leo_ws/src/leo-marsyard/leo_gazebo/models/terrain/* $HOME/.gazebo/models/terrain/
 cd $HOME/.gazebo/models/terrain/meshes
 wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1BkFel0FbazgMBX4ESszcX8o3YBbMmQ6J' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1BkFel0FbazgMBX4ESszcX8o3YBbMmQ6J" -O model4.obj && rm -rf /tmp/cookies.txt
-
+```
+4. Initialize rosdep tool to install any missing dependencies
+```
+cd ~/leo_ws
+sudo rosdep init
+```
+5. Install dependencies
+```
+rosdep update
+sudo apt update
+rosdep install --from-paths src --ignore-src
 ```
 4. Build
 ```
-cd ..
 catkin_make
 ```
 5. Source workspace
@@ -32,6 +44,7 @@ roslaunch leo_gazebo leo_marsyard.launch
 ```
 7. Open another terminal and run rviz
 ```
+source devel/setup.bash
 roslaunch leo_viz rviz.launch
 ```
 
