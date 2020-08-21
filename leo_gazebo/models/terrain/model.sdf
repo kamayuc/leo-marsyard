@@ -20,7 +20,7 @@
       <collision name="collision">
         <geometry>
           <mesh>
-            <uri>model://terrain/meshes/model4.obj</uri>
+            <uri>model://terrain/meshes/mapa.obj</uri>
             <scale>0.05 0.05 0.05</scale>
           </mesh>
         </geometry>
@@ -28,7 +28,7 @@
       <visual name="visual">	
         <geometry>
 	  <mesh>
-            <uri>model://terrain/meshes/model4.obj</uri>
+            <uri>model://terrain/meshes/mapa.obj</uri>
             <scale>0.05 0.05 0.05</scale>
           </mesh>
         </geometry>
