@@ -9,7 +9,9 @@
   <xacro:arg name="rockers_fixed" default="true"/>
 
   <xacro:include filename="$(find leo_description)/urdf/leo.gazebo.xacro"/>
-
+  <!-- ZED -->
+  <xacro:include filename="$(find leo_description)/urdf/sensors/zed.urdf.xacro"/>
+  
   <xacro:if value="$(arg fixed)">
     <link name="world"/>
     <joint name="fixed" type="fixed">
