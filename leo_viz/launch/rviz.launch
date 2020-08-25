@@ -1,5 +1,5 @@
 <launch>
-  <arg name="config" default="robot" />
+  <arg name="config" default="kamayuc" />
   <arg name="rviz_file" default="$(find leo_viz)/rviz/$(arg config).rviz"/>
 
   <node name="$(anon rviz)" 
