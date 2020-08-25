@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+
+<!--
+Copyright (c) 2020
+
+All rights reserved.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+    <!-- Arguments -->
+    <xacro:arg name="base_frame"    default="base_link" />
+    <!-- <xacro:arg name="imu_plugin"    default="gazebo" /> -->
+    <xacro:arg name="imu_plugin"   default="hector" />
+
+    <!-- Properties -->
+    <xacro:property name="plugin"    value="$(arg imu_plugin)" />
+
+<!-- IMU link -->
+    <joint name="imu_joint" type="fixed">
+		<axis xyz="1 0 0"/>
+		<origin xyz="0 0 0.05"/>
+		<parent link="$(arg base_frame)"/>
+		<child link="imu_link"/>
+	</joint>
+
+	<link name="imu_link">
+	  <inertial>
+	    <mass value="0.001"/>
+	    <origin rpy="0 0 0" xyz="0 0 0"/>
+	    <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.0001"/>
+	  </inertial>
+	  <visual>
+	    <origin rpy="0 0 0" xyz="0 0 0"/>
+	    <geometry>
+	      <box size="0.001 0.001 0.001"/>
+	    </geometry>
+	  </visual>
+	  <collision>
+	    <origin rpy="0 0 0" xyz="0 0 0"/>
+	    <geometry>
+	      <box size=".001 .001 .001"/>
+	    </geometry>
+	  </collision>
+	</link>
+
+<!-- IMU Gazebo Plugin -->  
+    <xacro:if value="${plugin == 'gazebo'}">
+        <gazebo reference="imu_link">
+            <gravity>true</gravity>
+            <sensor name="imu_sensor" type="imu">
+                <always_on>true</always_on>
+                <update_rate>100</update_rate>
+                <visualize>true</visualize>
+                <topic>__default_topic__</topic>
+            <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+                <topicName>imu</topicName>
+                <bodyName>imu_link</bodyName>
+                <updateRateHZ>30.0</updateRateHZ>
+                <gaussianNoise>0.05</gaussianNoise>
+                <xyzOffset>0 0 0</xyzOffset>
+                <rpyOffset>0 0 0</rpyOffset>
+                <frameName>imu_link</frameName>
+                <initialOrientationAsReference>false</initialOrientationAsReference>
+            </plugin>
+            <pose>0 0 0 0 0 0</pose>
+            </sensor>
+        </gazebo>
+    </xacro:if>
+<!-- Hector IMU Plugins -->
+    <xacro:if value="${plugin == 'hector'}">
+    <!-- IMU sensor-->
+        <gazebo>
+            <plugin name="imu_sim" filename="libhector_gazebo_ros_imu.so" type="imu">
+            <alwaysOn>true</alwaysOn>
+            <topicName>imu/data</topicName>
+            <updateRate>100.0</updateRate>
+            <serviceName>imu_service</serviceName>
+            <bodyName>imu_link</bodyName>
+            <frameId>imu_link</frameId>
+
+            <accelOffset>0.1 0.1 0.1</accelOffset>
+            <accelDrift>0.0 0.0 0.0</accelDrift>
+            <accelDriftFrequency>0.0 0.0 0.0</accelDriftFrequency>
+            <accelGaussianNoise>0.35 0.35 0.3</accelGaussianNoise>
+
+            <rateOffset>0.0 0.0 0.0</rateOffset>
+            <rateDrift>0.01 0.01 0.01</rateDrift>
+            <rateDriftFrequency>0.0 0.0 0.0</rateDriftFrequency>
+            <rateGaussianNoise>0.05 0.05 0.015</rateGaussianNoise>
+
+            <headingOffset>0.0 0.0 0.0</headingOffset>
+            <headingDrift>0.0 0.0 0.0</headingDrift>
+            <headingDriftFrequency>0.0 0.0 0.0</headingDriftFrequency>
+            <headingGaussianNoise>0.05 0.05 0.05</headingGaussianNoise>
+            </plugin>
+        </gazebo>
+
+    <!-- Magnetic sensor-->
+        <gazebo>
+            <plugin name="magnetic_sim" filename="libhector_gazebo_ros_magnetic.so">
+                <alwaysOn>true</alwaysOn>
+                <topicName>magnetic/data</topicName>
+                <updateRate>100.0</updateRate>
+                <bodyName>imu_link</bodyName>
+                <frameId>imu_link</frameId>
+                <magnitude>46967.9</magnitude>
+                <declination>-2.3865</declination>
+                <inclination>-61.7292</inclination>
+                <offset>0.0 0.0 0.0</offset>
+                <drift>0.0 0.0 0.0</drift>
+                <gaussianNoise>100.0 100.0 100.0</gaussianNoise>
+            </plugin>
+        </gazebo>
+    <!-- GPS sensor-->
+        <!-- <plugin name="gps_sim" filename="libhector_gazebo_ros_gps.so">
+            <updateRate>1.0</updateRate>
+            <bodyName>imu_link</bodyName>
+            <frameId>imu_link</frameId>
+            <topicName>gps/fix</topicName>
+            <velocityTopicName>gps/vel</velocityTopicName>
+            <referenceLatitude>46.518125</referenceLatitude>
+            <referenceLongitude>6.565539</referenceLongitude>
+            <drift>0 0 0</drift>
+            <gaussianNoise>0.0 0.0 0.0</gaussianNoise>
+            <velocityDrift>0 0 0</velocityDrift>
+            <velocityGaussianNoise>0.05 0.05 0.05</velocityGaussianNoise>
+        </plugin> -->
+    </xacro:if>
+</robot>

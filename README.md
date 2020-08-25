@@ -40,6 +40,7 @@ source devel/setup.bash
 6. Install Gazebo Pluggins
 ```
 sudo apt-get install ros-melodic-gazebo-plugins
+sudo apt-get install ros-melodic-hector-gazebo-plugins
 ```
 7. Run Gazebo simulation
 ```
@@ -52,7 +53,6 @@ roslaunch leo_viz rviz.launch
 ```
 
 ## Topics
-
 Set velocity (message type: [cmd_vel](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html))
 * /cmd_vel
 
@@ -69,9 +69,20 @@ Camera data: (message type: [image](http://docs.ros.org/melodic/api/sensor_msgs/
 * /zed/camera/left/image_raw
 * /zed/camera/right/image_raw
 
+IMU data: (message type: [image](http://docs.ros.org/melodic/api/sensor_msgs/html/msg/Imu.html))
+* /imu/data
+* /imu/data/bias
+
+Magnetometer data: (message type: [image](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Vector3Stamped.html))
+* /magnetic/data
+
+
 Leo robot parameters and updates:
 * /controllers/diff_drive/parameter_descriptions
 * /controllers/diff_drive/parameter_updates
+
+## Configurations
+Magnetometer & IMU [reference](http://wiki.ros.org/hector_gazebo_plugins).
 
 ## Dependencies
 
