@@ -1,0 +1,47 @@
+#!/usr/bin/python
+import rospy
+import tf
+
+# ROS messages.
+from nav_msgs.msg import Odometry
+
+class GlobToOdom():
+    def __init__(self):
+        self.got_new_msg = False
+        self.odom_msg = Odometry()
+
+        # Create subscribers and publishers.
+        sub_imu   = rospy.Subscriber("robot/pose", Odometry, self.odom_callback)
+        pub_odom = rospy.Publisher("robot/pose/odom", Odometry, queue_size=1)
+
+        # Main while loop.
+        while not rospy.is_shutdown():
+            # Publish new data if we got a new message.
+            if self.got_new_msg:
+                pub_odom.publish(self.odom_msg)
+                self.got_new_msg = False
+
+    # Odometry callback function.
+    def odom_callback(self, msg):
+        self.got_new_msg = True
+        # Convert quaternions to Euler angles.
+        self.odom_msg.pose.pose.position.x = msg.pose.pose.position.x - 23.805
+        self.odom_msg.pose.pose.position.y = msg.pose.pose.position.y + 31.5950
+        self.odom_msg.pose.pose.position.z = msg.pose.pose.position.z
+        
+        (r, p, y) = tf.transformations.euler_from_quaternion([msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, msg.pose.pose.orientation.z, msg.pose.pose.orientation.w], 'rxyz')
+        (x, y, z, w) = tf.transformations.quaternion_from_euler(r, p, y - 1.5708, axes='rxyz')
+
+        self.odom_msg.pose.pose.orientation.x = x
+        self.odom_msg.pose.pose.orientation.y = y
+        self.odom_msg.pose.pose.orientation.z = z
+        self.odom_msg.pose.pose.orientation.w = w
+
+# Main function.    
+if __name__ == '__main__':
+    # Initialize the node and name it.
+    rospy.init_node('global_to_odom')
+    # Go to class functions that do all the heavy lifting. Do error checking.
+    try:
+        global_to_odom = GlobToOdom()
+    except rospy.ROSInterruptException: pass

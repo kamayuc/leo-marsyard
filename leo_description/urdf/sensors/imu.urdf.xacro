@@ -138,4 +138,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             <velocityGaussianNoise>0.05 0.05 0.05</velocityGaussianNoise>
         </plugin> -->
     </xacro:if>
+    <gazebo>
+        <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+            <alwaysOn>true</alwaysOn>
+            <updateRate>50.0</updateRate>
+            <bodyName>base_link</bodyName>
+            <topicName>robot/pose</topicName>
+            <gaussianNoise>0.0</gaussianNoise>
+            <frameName>world</frameName>
+            <xyzOffsets>-23.805 31.5950 -1.0</xyzOffsets>
+            <rpyOffsets>0 0 -1.5708</rpyOffsets>
+        </plugin>
+    </gazebo>
 </robot>

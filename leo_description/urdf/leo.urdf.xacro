@@ -13,6 +13,7 @@
   <xacro:include filename="$(find leo_description)/urdf/sensors/zed.urdf.xacro"/>
   <!-- IMU -->
   <xacro:include filename="$(find leo_description)/urdf/sensors/imu.urdf.xacro"/>
+  <!-- GLOBAL SYSTEM -->
   
   <xacro:if value="$(arg fixed)">
     <link name="world"/>

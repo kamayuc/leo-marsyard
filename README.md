@@ -56,8 +56,13 @@ roslaunch leo_viz rviz.launch
 Set velocity (message type: [cmd_vel](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html))
 * /cmd_vel
 
-Odometry information: (message type: [odom](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/TwistStamped.html))
-* /wheel_odom
+Odometry information:
+* /wheel_odom   (message type: [TwistStamped](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/TwistStamped.html))
+    * (frame_id : 'base_link')
+    * (twist : linear & angular)
+* /controllers/diff_drive/odom    (message type: [odom](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/TwistStamped.html))
+    * (frame_id : 'odom', child_frame_id : 'base_link')
+    * (pose : position & orientation, twist : linear & angular)
 
 Camera information: (message type: [camera_info](http://docs.ros.org/melodic/api/sensor_msgs/html/msg/CameraInfo.html))
 * /camera/camera_info
@@ -71,7 +76,15 @@ Camera data: (message type: [image](http://docs.ros.org/melodic/api/sensor_msgs/
 
 IMU data: (message type: [image](http://docs.ros.org/melodic/api/sensor_msgs/html/msg/Imu.html))
 * /imu/data
+    * (frame_id : 'imu_link')
+    * (orientation, orientation_covariance)
+    * (angular_velocity, angular_velocity_covariance)
+    * (linear_acceleration, linear_acceleration_covariance)    
 * /imu/data/bias
+    * (frame_id : 'imu_link')
+    * (orientation, orientation_covariance)
+    * (angular_velocity, angular_velocity_covariance)
+    * (linear_acceleration, linear_acceleration_covariance)   
 
 Magnetometer data: (message type: [image](http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Vector3Stamped.html))
 * /magnetic/data
